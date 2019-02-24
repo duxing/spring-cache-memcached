@@ -1,0 +1,20 @@
+version: '3.2'
+services:
+  application-web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      JAVA_HEAP_SIZE: 512M
+      # todo: use mysql or use a local read-only volume as data volume
+    volumes:
+      - type: volume
+        source: config-volume
+        target: /opt/app/data
+        read_only: true
+  memcached:
+    image: "memcached:1.5.10-alpine"
+    ports:
+      - "11211:11211"
+volumes:
+  config-volume:
