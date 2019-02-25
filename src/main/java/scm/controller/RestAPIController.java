@@ -3,15 +3,13 @@ package scm.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import scm.Application;
 import scm.model.Data;
 import scm.model.Ping;
 import scm.processor.APIProcessor;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value="/" + Application.NAME)
@@ -33,10 +31,31 @@ public class RestAPIController {
         return Ping.get();
     }
 
+    @RequestMapping(value="/data", method=RequestMethod.POST)
+    @ResponseBody
+    public Data createData() {
+        LOG.info("method=\"createData\"");
+        return processor.create();
+    }
+
     @RequestMapping(value="/data/{dataId}", method=RequestMethod.GET)
     @ResponseBody
     public Data getData(@PathVariable String dataId) {
-        LOG.info("method=\"getData\" dataId=\"{}\"", dataId);
-        return processor.getData(dataId);
+        LOG.info("method=\"get\" dataId=\"{}\"", dataId);
+        return processor.get(dataId);
+    }
+
+    @RequestMapping(value="/data", method=RequestMethod.GET)
+    @ResponseBody
+    public Collection<Data> getAllData() {
+        LOG.info("method=\"getAllData\"");
+        return processor.getAll();
+    }
+
+    @RequestMapping(value="/data/{dataId}", method=RequestMethod.PUT)
+    @ResponseBody
+    public Data updateData(@PathVariable String dataId, @RequestBody Data data) {
+        LOG.info("method=\"update\" dataId=\"{}\"", dataId);
+        return processor.update(dataId, data);
     }
 }

@@ -21,6 +21,9 @@ Example project for using memcached as spring cache storage
 
 ### Using spring cache
  - Build and run application with commands above
- - Run `curl -s -X 'GET' localhost:8080/app/data/<dataId>` to create a cache entry
+ - Run `curl -s -X 'GET' localhost:8080/app/data` to fetch all data response(empty) and create a cache entry
  - Run the same query again (before the expiration window) to verify response is loaded from cache (see logs from `make docker_logs`)
- - Query `memcached` to see the cache. With the default configuration and using `1234` as the `dataId`: `echo get cache0:1234 | nc localhost 11211`
+ - Run `curl -s -X 'POST' localhost:8080/app/data` to create a new `Data` object
+ - Run `curl -s -X 'PUT' localhost:8080/app/data/<dataId> -H 'content-type: application/json -d '{"payload":"<payload>"}'` to update the entry.
+ - Both steps will bust the cache entry we had. Run the query for getting all data again to get a new entry
+ - Query `memcached` to see the cache: `echo get <cache_name>:<cache_key> | nc localhost 11211`

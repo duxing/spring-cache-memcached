@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableCaching
 public class MemcachedConfiguration {
+    public static final String KEY_DELIMETER = ":";
+
     private final Logger LOG = LoggerFactory.getLogger(MemcachedConfiguration.class);
 
     // extends AbstractSSMConfiguration
