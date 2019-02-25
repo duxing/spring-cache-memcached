@@ -1,0 +1,5 @@
+memcached:
+  host: memcached
+  port: 11211
+  expiration: 60
+  names: cache0,cache1

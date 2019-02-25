@@ -12,6 +12,8 @@ services:
         source: config-volume
         target: /opt/app/data
         read_only: true
+    depends_on:
+       - memcached
   memcached:
     image: "memcached:1.5.10-alpine"
     ports:

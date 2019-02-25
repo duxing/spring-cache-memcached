@@ -14,7 +14,7 @@ docker_gradle_build:
 
 .PHONY: docker_build_web
 docker_build_web:
-	$(DOCKER_COMPOSE) build --force-rm --no-cache $(SERVICE_NAME)
+	$(DOCKER_COMPOSE) build $(SERVICE_NAME)
 
 .PHONY: docker_up
 docker_up:

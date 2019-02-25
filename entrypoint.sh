@@ -11,3 +11,5 @@ fi
 JAVA_HEAP_SIZE=${JAVA_HEAP_SIZE:=256M}
 JAVA_OPTS=${JAVA_OPTS:=-Xms${JAVA_HEAP_SIZE} -Xmx${JAVA_HEAP_SIZE}}
 exec /usr/bin/java ${JAVA_OPTS} -jar application.jar 2>&1
+
+# --spring.profiles.active=${ENVIRONMENT} 

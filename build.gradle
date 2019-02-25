@@ -10,6 +10,7 @@ ext {
     springBootVersion = '2.1.2.RELEASE'
     jacksonVersion = '2.9.8'
     log4j2Version = '2.11.1'
+    ssmVersion = '4.1.2'
 }
 
 repositories {
@@ -27,6 +28,9 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}", {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
+
+    implementation group: 'com.google.code.simple-spring-memcached', name: 'spring-cache', version: "${ssmVersion}"
+    implementation group: 'com.google.code.simple-spring-memcached', name: 'xmemcached-provider', version: "${ssmVersion}"
 }
 
 
