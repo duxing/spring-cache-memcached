@@ -9,7 +9,7 @@ import scm.model.Data;
 import scm.model.Ping;
 import scm.processor.APIProcessor;
 
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/" + Application.NAME)
@@ -47,7 +47,7 @@ public class RestAPIController {
 
     @RequestMapping(value="/data", method=RequestMethod.GET)
     @ResponseBody
-    public Collection<Data> getAllData() {
+    public List<Data> getAllData() {
         LOG.info("method=\"getAllData\"");
         return processor.getAll();
     }
@@ -57,5 +57,12 @@ public class RestAPIController {
     public Data updateData(@PathVariable String dataId, @RequestBody Data data) {
         LOG.info("method=\"update\" dataId=\"{}\"", dataId);
         return processor.update(dataId, data);
+    }
+
+    @RequestMapping(value="/data/{dataId}", method=RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteData(@PathVariable String dataId) {
+        LOG.info("method=\"delete\" dataId=\"{}\"", dataId);
+        processor.delete(dataId);
     }
 }
