@@ -5,8 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import scm.model.Data;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,14 +36,14 @@ public class DataStore {
         Data i = index.get(id);
         i.setPayload(data.getPayload());
 
-        return get(data.getId());
+        return get(id);
     }
 
     public boolean delete(String id) {
         return index.remove(id) != null;
     }
 
-    public Collection<Data> getAll() {
-        return index.values();
+    public List<Data> getAll() {
+        return new ArrayList<>(index.values());
     }
 }
