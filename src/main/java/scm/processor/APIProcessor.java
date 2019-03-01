@@ -15,48 +15,52 @@ import java.util.List;
 @Component
 public class APIProcessor {
    private static final Logger LOG = LoggerFactory.getLogger(APIProcessor.class);
-   private static final String CACHE_NAME = "cache0";
-   public static final String ALL_DATA_CACHE_KEY = "all-data";
+   private static final String ALL_DATA_CACHE_NAME = "cache0";
+   private static final String DATA_CACHE_NAME = "cache1";
 
    @Autowired
    private DataStore dataStore;
 
-   @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.ALL_DATA_CACHE_KEY")
+   @CacheEvict(value = ALL_DATA_CACHE_NAME, cacheManager = "cacheManager", key="#root.target.allDataCacheKey()")
    public Data create() {
       return dataStore.create();
    }
 
-   // Using one `CacheEvict` alone is fine.
-   // @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.dataCacheKey(#dataId)")
+   // in SSMCache implementation, `allEntries` in `CacheEvict` will clear all cache on the physical (instead of logical) cache.
+   // e.g. multiple caches (logical) are hosted on the same memcached cluster (physical cache)
    @Caching(evict = {
-           @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.ALL_DATA_CACHE_KEY"),
-           @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.dataCacheKey(#dataId)")
+           @CacheEvict(value = ALL_DATA_CACHE_NAME, cacheManager = "cacheManager", key="#root.target.allDataCacheKey()"),
+           @CacheEvict(value = DATA_CACHE_NAME, cacheManager = "cacheManager", key="#root.target.dataCacheKey(#dataId)")
    })
    public Data update(String dataId, Data data) {
       return dataStore.update(dataId, data);
    }
 
    @Caching(evict = {
-           @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.ALL_DATA_CACHE_KEY"),
-           @CacheEvict(value = CACHE_NAME, cacheManager = "cacheManager", key="#root.target.dataCacheKey(#dataId)")
+           @CacheEvict(value = ALL_DATA_CACHE_NAME, cacheManager = "cacheManager", key="#root.target.allDataCacheKey()"),
+           @CacheEvict(value = DATA_CACHE_NAME, cacheManager = "cacheManager", key="#root.target.dataCacheKey(#dataId)")
    })
    public void delete(String dataId) {
       dataStore.delete(dataId);
    }
 
    // https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache-spel-context
-   @Cacheable(value = CACHE_NAME, cacheManager = "cacheManager", key = "#root.target.dataCacheKey(#dataId)")
+   @Cacheable(value = DATA_CACHE_NAME, cacheManager = "cacheManager", key = "#root.target.dataCacheKey(#dataId)", unless = "#result == null")
    public Data get(String dataId) {
       return dataStore.get(dataId);
    }
 
-   @Cacheable(value = CACHE_NAME, cacheManager = "cacheManager", key = "#root.target.ALL_DATA_CACHE_KEY")
+   @Cacheable(value = ALL_DATA_CACHE_NAME, cacheManager = "cacheManager", key = "#root.target.allDataCacheKey()")
    public List<Data> getAll() {
       LOG.info("msg=\"cache miss\"");
       return dataStore.getAll();
    }
 
+   public static String allDataCacheKey() {
+      return String.join(":", "allData");
+   }
+
    public static String dataCacheKey(String id) {
-      return "data:" + id;
+      return String.join(":", "data", id);
    }
 }
